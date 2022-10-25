@@ -27,16 +27,6 @@ class Proj4GUI(QMainWindow):
 
     def __init__(self):
         super(Proj4GUI, self).__init__()
-
-        self.RED_STYLE = "background-color: rgb(255, 220, 220)"
-        self.PLAIN_STYLE = "background-color: rgb(255, 255, 255)"
-
-        self.seqs = self.load_sequences_from_file()
-        self.processed_results = []
-
-        self.init_ui()
-        self.solver = GeneSequencing()
-
         self.statusBar = None
         self.table = None
         self.processButton = None
@@ -52,6 +42,15 @@ class Proj4GUI(QMainWindow):
         self.seq2c_lbl = None
         self.seq2n_lbl = None
         self.seq2n_lbl = None
+
+        self.RED_STYLE = "background-color: rgb(255, 220, 220)"
+        self.PLAIN_STYLE = "background-color: rgb(255, 255, 255)"
+
+        self.seqs = self.load_sequences_from_file()
+        self.processed_results = []
+
+        self.init_ui()
+        self.solver = GeneSequencing()
 
     def process_clicked(self):
         sequences = [self.seqs[i][2] for i in sorted(self.seqs.keys())]
@@ -182,16 +181,16 @@ class Proj4GUI(QMainWindow):
         headers = ['sequence{}'.format(a + 1) for a in range(n_seq)]
         self.table.setHorizontalHeaderLabels(headers)
         self.table.setVerticalHeaderLabels(headers)
-        self.table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.table.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.table.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.table.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
         for i in range(n_seq):
             for j in range(n_seq):
                 q_item = QTableWidgetItem(" ")
-                q_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+                q_item.setFlags( Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled)
                 if j < i:
                     q_item.setBackground(QColor(200, 200, 200))
-                    q_item.setFlags(Qt.ItemIsSelectable)
+                    q_item.setFlags( Qt.ItemFlag.ItemIsSelectable)
                 self.table.setItem(i, j, q_item)
         for i in range(n_seq):
             self.table.resizeColumnToContents(i)

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+from TableGraph import TableGraph
 from which_pyqt import PYQT_VER
 if PYQT_VER == 'PYQT5':
 	from PyQt6.QtCore import QLineF, QPointF
@@ -24,13 +24,22 @@ class GeneSequencing:
 		self.banded = None
 		self.MaxCharactersToAlign = None
 	
-# This is the method called by the GUI.  _seq1_ and _seq2_ are two sequences to be aligned, _banded_ is a boolean that tells
-# you whether you should compute a banded alignment or full alignment, and _align_length_ tells you 
-# how many base pairs to use in computing the alignment
+# This is the method called by the GUI.
+	# _seq1_ and _seq2_ are two sequences to be aligned
+	# _banded_ is a boolean that tells you whether you should compute a banded alignment or full alignment
+	# _align_length_ tells you how many base pairs to use in computing the alignment
 
 	def align( self, seq1, seq2, banded, align_length):
 		self.banded = banded
 		self.MaxCharactersToAlign = align_length
+
+		table_graph = TableGraph(seq1, seq2)
+
+		print(table_graph.to_string())
+
+		table_graph.align()
+
+		print(table_graph.to_string())
 
 ###################################################################################################
 # your code should replace these three statements and populate the three variables: score, alignment1 and alignment2
