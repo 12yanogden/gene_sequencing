@@ -33,23 +33,23 @@ class GeneSequencing:
 		self.banded = banded
 		self.MaxCharactersToAlign = align_length
 
-		table_graph = TableGraph(seq1, seq2)
-
-		print(table_graph.to_string())
+		table_graph = TableGraph(seq1, seq2, align_length)
 
 		table_graph.align()
 
-		print(table_graph.to_string())
+		# print(table_graph.to_string())
 
-###################################################################################################
-# your code should replace these three statements and populate the three variables: score, alignment1 and alignment2
-		score = random.random() * 100
-		alignment1 = 'abc-easy  DEBUG:({} chars,align_len={}{})'.format(
-			len(seq1), align_length, ',BANDED' if banded else '')
-		alignment2 = 'as-123--  DEBUG:({} chars,align_len={}{})'.format(
-			len(seq2), align_length, ',BANDED' if banded else '')
-###################################################################################################					
-		
+		score = table_graph.get_final_score()
+
+		alignments = table_graph.get_alignments()
+		alignment1 = alignments[0]
+		alignment2 = alignments[1]
+
+		# print("alignment1: " + alignment1)
+		# print("alignment2: " + alignment2)
+		# print("score: " + str(score))
+		# print()
+
 		return {'align_cost': score, 'seqi_first100': alignment1, 'seqj_first100': alignment2}
 
 

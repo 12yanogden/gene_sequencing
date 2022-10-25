@@ -208,7 +208,7 @@ class Proj4GUI(QMainWindow):
         self.banded.setChecked(False)
         self.alignLength = QLineEdit('1000')
         font = QFont()
-        font.setFamily("Courier")
+        font.setFamily("Menlo")
         self.seq1_name = QLineEdit('')
         self.seq1_name.setFixedWidth(650)
         self.seq1_name.setEnabled(False)
