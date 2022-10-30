@@ -54,6 +54,10 @@ class Method(ABC):
         self.scores[0, 0] = 0
         self.prevs[0, 0] = None
 
+    @abstractmethod
+    def align(self):
+        pass
+
     # ---------------------------------------------------------------------------------------#
     #                                                                                        #
     #                                     Deliverables                                       #
