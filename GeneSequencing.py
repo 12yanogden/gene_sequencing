@@ -29,14 +29,14 @@ class GeneSequencing:
 
         method.align()
 
-        print(method.to_string())
+        # print(method.to_string())
 
         score = method.get_score()
         alignment1, alignment2 = method.get_alignments()
 
-        print("Score: " + str(score))
-        print("Alignment 1: " + alignment1[0:100])
-        print("Alignment 2: " + alignment2[0:100])
-        print()
+        # print("Score: " + str(score))
+        # print("Alignment 1: " + alignment1[0:100])
+        # print("Alignment 2: " + alignment2[0:100])
+        # print()
 
         return {'align_cost': score, 'seqi_first100': alignment1, 'seqj_first100': alignment2}
