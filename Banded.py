@@ -2,15 +2,19 @@ MATCH = -3
 INS_DEL = 5
 SUB = 1
 
+MAX_INS_DEL = 3
+BAND_RADIUS = MAX_INS_DEL + 1
+BAND_WIDTH = 2 * MAX_INS_DEL + 1
 
-class Unrestricted:
+
+class Banded:
     def __init__(self, seq1, seq2, align_length):
         self.seq1 = '-' + seq1
         self.seq2 = '-' + seq2
         self.seq1_length = len(seq1)
         self.seq2_length = len(seq2)
         self.align_length1 = min(self.seq1_length + 1, align_length + 1)
-        self.align_length2 = min(self.seq2_length + 1, align_length + 1)
+        self.align_length2 = min(self.seq2_length + 1, align_length + 1, self.align_length1 + MAX_INS_DEL)
         self.scores = {}
         self.prevs = {}
 
@@ -26,13 +30,22 @@ class Unrestricted:
 
         return diagonal_score + MATCH if align1 == align2 else diagonal_score + SUB
 
-    def calc_min_score(self, i, j):
+    def calc_prevs(self, i, j):
+        prevs = [[self.calc_diagonal_score(i, j), 'D', 2]]
+
+        if (i + MAX_INS_DEL) != j:
+            prevs.append([self.scores[i - 1, j] + INS_DEL, 'U', 1])
+
+        if (i - MAX_INS_DEL) != j:
+            prevs.append([self.scores[i, j - 1] + INS_DEL, 'L', 0])
+
+        return prevs
+
+    def calc_min_prev(self, i, j):
         score = 0
         prev_char = 1
         priority = 2
-        prevs = [[self.calc_diagonal_score(i, j), 'D', 2],
-                 [self.scores[i - 1, j] + INS_DEL, 'U', 1],
-                 [self.scores[i, j - 1] + INS_DEL, 'L', 0]]
+        prevs = self.calc_prevs(i, j)
 
         min_prev = prevs.pop()
         for prev in prevs:
@@ -42,26 +55,45 @@ class Unrestricted:
 
         return min_prev[score], min_prev[prev_char]
 
+    def align_cell(self, i, j):
+        prev_score, prev_char = self.calc_min_prev(i, j)
+
+        self.scores[i, j] = prev_score
+        self.prevs[i, j] = prev_char
+
     def align(self):
-        # Initial score
+        # Align initial
         self.scores[0, 0] = 0
         self.prevs[0, 0] = None
 
-        # Edge scores
-        for i in range(1, self.align_length1):
+        # Align edge scores
+        for i in range(1, BAND_RADIUS):
             self.scores[i, 0] = i * INS_DEL
             self.prevs[i, 0] = 'U'
-        for j in range(1, self.align_length2):
+        for j in range(1, BAND_RADIUS):
             self.scores[0, j] = j * INS_DEL
             self.prevs[0, j] = 'L'
 
-        # Fill in the rest of the scores
-        for i in range(1, self.align_length1):
-            for j in range(1, self.align_length2):
-                min_score, prev_char = self.calc_min_score(i, j)
+        # Align first section
+        for i in range(1, BAND_RADIUS):
+            for j in range(1, BAND_RADIUS + i):
+                self.align_cell(i, j)
 
-                self.scores[i, j] = min_score
-                self.prevs[i, j] = prev_char
+        # Align second section
+        for i in range(BAND_RADIUS, self.align_length1 - MAX_INS_DEL):
+            for j in range(i - MAX_INS_DEL, i + BAND_RADIUS):
+                self.align_cell(i, j)
+
+        if self.align_length2 >= self.align_length1 + MAX_INS_DEL:
+            # Continue to align second section
+            for i in range(self.align_length1 - MAX_INS_DEL, self.align_length1):
+                for j in range(i - MAX_INS_DEL, i + BAND_RADIUS):
+                    self.align_cell(i, j)
+        else:
+            # Align third section
+            for i in range(self.align_length1 - MAX_INS_DEL, self.align_length1):
+                for j in range(i - MAX_INS_DEL, self.align_length2):
+                    self.align_cell(i, j)
 
     # ---------------------------------------------------------------------------------------#
     #                                                                                        #

@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from Banded import Banded
 from Unrestricted import Unrestricted
 from which_pyqt import PYQT_VER
 
@@ -11,9 +12,6 @@ import math
 import time
 import random
 
-# Used to compute the bandwidth for banded version
-MAXINDELS = 3
-
 
 class GeneSequencing:
     def __init__(self):
@@ -24,15 +22,21 @@ class GeneSequencing:
     # how many base pairs to use in computing the alignment
 
     def align(self, seq1, seq2, banded, align_length):
-        self.banded = banded
+        if banded:
+            method = Banded(seq1, seq2, align_length)
+        else:
+            method = Unrestricted(seq1, seq2, align_length)
 
-        unrestricted = Unrestricted(seq1, seq2, align_length)
+        method.align()
 
-        unrestricted.align()
+        print(method.to_string())
 
-        # print(unrestricted.to_string())
+        score = method.get_score()
+        alignment1, alignment2 = method.get_alignments()
 
-        score = unrestricted.get_score()
-        alignment1, alignment2 = unrestricted.get_alignments()
+        print("Score: " + str(score))
+        print("Alignment 1: " + alignment1[0:100])
+        print("Alignment 2: " + alignment2[0:100])
+        print()
 
         return {'align_cost': score, 'seqi_first100': alignment1, 'seqj_first100': alignment2}
