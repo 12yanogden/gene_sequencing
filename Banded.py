@@ -136,25 +136,25 @@ class Banded:
     #                                         Debug                                          #
     #                                                                                        #
     # ---------------------------------------------------------------------------------------#
-    def calc_top_row_string(self):
+    def calc_top_row_string(self, initial_index2, end_index2):
         out = " \t"
 
-        for j in range(min(self.align_length2, 20)):
+        for j in range(initial_index2, end_index2):
             out += self.seq2[j] + "\t"
 
         out += "\n"
 
         return out
 
-    def calc_string(self, initial_index1, align_length1, initial_index2, align_length2):
-        out = self.calc_top_row_string()
+    def calc_string(self, initial_index1, end_index1, initial_index2, end_index2):
+        out = self.calc_top_row_string(initial_index2, end_index2)
 
         # Print rest of table
-        for i in range(initial_index1, align_length1):
+        for i in range(initial_index1, end_index1):
 
             out += self.seq1[i] + "\t"
 
-            for j in range(initial_index2, align_length2):
+            for j in range(initial_index2, end_index2):
                 cell = self.scores.get((i, j))
 
                 if cell is None:
