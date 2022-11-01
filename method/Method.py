@@ -6,6 +6,7 @@ SUB = 1
 
 
 class Method(ABC):
+    # Time O(1), Space O(1)
     def __init__(self, seq1, seq2, align_length):
         self.seq1 = '-' + seq1
         self.seq2 = '-' + seq2
@@ -16,15 +17,16 @@ class Method(ABC):
         self.scores = {}
         self.prevs = {}
 
-    # ---------------------------------------------------------------------------------------#
-    #                                                                                        #
-    #                                         Align                                          #
-    #                                                                                        #
-    # ---------------------------------------------------------------------------------------#
+    # -----------------------------------------------------------------------------#
+    #                                                                              #
+    #                                    Align                                     #
+    #                                                                              #
+    # -----------------------------------------------------------------------------#
     @abstractmethod
     def calc_align_length2(self, align_length):
         pass
 
+    # Time O(1), Space O(1)
     def calc_diagonal_score(self, i, j):
         diagonal_score = self.scores[i - 1, j - 1]
         align1 = self.seq1[i]
@@ -36,6 +38,7 @@ class Method(ABC):
     def calc_prevs(self, i, j):
         pass
 
+    # Time O(1), Space O(1)
     def calc_min_prev(self, i, j):
         score = 0
         prev_char = 1
@@ -50,6 +53,7 @@ class Method(ABC):
 
         return min_prev[score], min_prev[prev_char]
 
+    # Time: 0(1), Space: 0(1)
     def align_initial(self):
         self.scores[0, 0] = 0
         self.prevs[0, 0] = None
@@ -58,14 +62,16 @@ class Method(ABC):
     def align(self):
         pass
 
-    # ---------------------------------------------------------------------------------------#
-    #                                                                                        #
-    #                                     Deliverables                                       #
-    #                                                                                        #
-    # ---------------------------------------------------------------------------------------#
+    # -----------------------------------------------------------------------------#
+    #                                                                              #
+    #                                Deliverables                                  #
+    #                                                                              #
+    # -----------------------------------------------------------------------------#
+    # Time O(1), Space O(1)
     def get_score(self):
         return self.scores[self.align_length1 - 1, self.align_length2 - 1]
 
+    # Time O(n + m), Space O(n + /[-[m)
     def get_alignments(self):
         alignment1 = ''
         alignment2 = ''
@@ -94,11 +100,11 @@ class Method(ABC):
 
         return alignment1, alignment2
 
-    # ---------------------------------------------------------------------------------------#
-    #                                                                                        #
-    #                                         Debug                                          #
-    #                                                                                        #
-    # ---------------------------------------------------------------------------------------#
+    # -----------------------------------------------------------------------------#
+    #                                                                              #
+    #                                    Debug                                     #
+    #                                                                              #
+    # -----------------------------------------------------------------------------#
     def calc_top_row_string(self, initial_index2, end_index2):
         out = " \t"
 

@@ -2,6 +2,8 @@
 
 import signal
 import sys
+import time
+import math
 
 from which_pyqt import PYQT_VER
 
